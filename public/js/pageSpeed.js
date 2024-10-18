@@ -10,7 +10,7 @@ function showMessageSuccess(message) {
     containerSuccess.style.display = "block";
     setTimeout(() => {
         containerSuccess.style.display = "none";
-    }, 2500);
+    }, 3000);
 }
 
 function cleanMessageSuccess() {
@@ -23,7 +23,7 @@ function showError(message) {
     errorContainer.style.display = "block";
     setTimeout(() => {
         errorContainer.style.display = "none";
-    }, 2500);
+    }, 3000);
 }
 
 function cleanError() {
@@ -70,15 +70,22 @@ async function handleSubmit(event) {
     const apiUrl = `getMetrics?${new URLSearchParams(formData).toString()}`;
 
     const btnRunMetric = document.getElementById("btnRunMetric");
+    btnRunMetric.disabled = true;
     btnRunMetric.classList.add("loading");
 
     try {
         const data = await fetchMetrics(apiUrl);
+        if (!data) {
+            throw new Error(
+                "Network response was not ok " + response.statusText
+            );
+        }
         displayResults(data);
     } catch (error) {
-        console.error("Error:", error);
+        showError(error);
     } finally {
         btnRunMetric.classList.remove("loading");
+        btnRunMetric.disabled = false;
     }
 }
 
@@ -105,9 +112,7 @@ async function fetchMetrics(apiUrl) {
         });
 
         if (!response.ok) {
-            throw new Error(
-                "Network response was not ok " + response.statusText
-            );
+            throw new Error("Server error" + response.statusText);
         }
         return await response.json();
     } catch (error) {
@@ -116,6 +121,7 @@ async function fetchMetrics(apiUrl) {
 }
 
 function displayResults(data) {
+    console.log(data);
     const categories = [
         { key: "accessibility", label: "Accessibility" },
         { key: "pwa", label: "PWA" },
@@ -132,6 +138,7 @@ function displayResults(data) {
         if (value) {
             labels.push(category.label);
             scores.push(value);
+            resultsObject[category.key] = value;
         }
     });
 

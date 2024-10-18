@@ -20,8 +20,7 @@ class PageSpeedController extends Controller {
             $categories = implode('&category=', $request->input('categories'));
             $strategy = $request->input('strategy');
             
-            $apiUrl = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url={$url}&key=AIzaSyDCrPAzhzWxZbJxPYIEURODTvBFVVRNHbY&category={$categories}&strategy={$strategy}";
-            
+            $apiUrl = env('API_URL') . "?url={$url}&key=AIzaSyDCrPAzhzWxZbJxPYIEURODTvBFVVRNHbY&category={$categories}&strategy={$strategy}";            
             $response = $client->get($apiUrl);
             $data = json_decode($response->getBody(), true);
             
@@ -46,7 +45,7 @@ class PageSpeedController extends Controller {
     public function getMyMetrics()
     {
         try {
-            $data = Cache::remember('metric_history_run', 60, function () {
+            $data = Cache::remember('metric_history_run', 600, function () {
                 return MetricHistoryRun::with(['strategy'])->get();
             });
         } catch (Exception $exception) {
@@ -62,6 +61,8 @@ class PageSpeedController extends Controller {
             $data['strategy_id'] = Strategy::where('name', $data['strategy'])->first()->id;
             $newMetric = new MetricHistoryRun($data);
             $newMetric->save();
+
+            Cache::forget('metric_history_run');
         }catch(Exception $exception){
             throw new Exception($exception->getMessage(), $exception->getCode());
         }
