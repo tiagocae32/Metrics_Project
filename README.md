@@ -28,3 +28,6 @@ La configuracion de los tests se encuentra en el archivo phpunit.xml(hacer las m
 # Dump BBDD
 
 Agregue tambien un dump de la base de datos. El mismo se encuentra en el root del proyecto(metrics_project.sql)
+
+-   Por las dudas verificar la version de node js con la que se este trabajando. Yo estoy con la version 18.20.4.
+    Esto por temas de compatibilidad con por ejemplo el uso de imports modules en vez de require.
