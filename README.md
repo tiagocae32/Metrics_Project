@@ -11,9 +11,9 @@ Tambien se deberan cambiar(llegado el caso) otras variables en el .env relaciona
 
 # php artisan migrate
 
-# php artisan make:seeder CategorySeeder
+# php artisan db:seed --class=CategorySeeder
 
-# php artisan make:seeder StrategySeeder
+# php artisan db:seed --class=StrategySeeder
 
 # npm run dev
 
